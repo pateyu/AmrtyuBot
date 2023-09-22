@@ -1,0 +1,2 @@
+# AmrtyuBot
+discord bot
