@@ -1,3 +1,10 @@
 from discord.ext import commands
-TOKEN = "MTE1NDU1MDUyMzEzNjA2NTU5Ng.GL9m8L.8bazg_oxEdvTL8E6aj5ZV_FKpiXbg2nm-0cvrw"
+import json
+
+# Load the configuration file
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+
+# Access the token
+discord_token = config['TOKEN']
 CHANNEL_ID = 1154552490361102426
