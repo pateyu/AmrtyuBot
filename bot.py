@@ -1,5 +1,4 @@
-
-from discord.ext import commands
+from discord.ext import commands, tasks
 import asyncio
 import discord
 from datetime import datetime, timedelta
@@ -13,6 +12,7 @@ with open('config.json', 'r') as config_file:
 # Access the token
 discord_token = config['TOKEN']
 CHANNEL_ID = 1154552490361102426
+MAX_SESSION= 60
 
 
 @dataclass
@@ -29,7 +29,7 @@ todo_lists = {}
 
 
 @bot.event
-async def on_ready():
+async def ready():
     print("Hello, the study bot is ready!")
     channel = bot.get_channel(CHANNEL_ID)
     await channel.send("Hello! Study bot is ready!")
@@ -46,13 +46,30 @@ async def add(ctx, *arr):
     
 @bot.command()
 async def multiply(ctx, *arr: int):
-    result = 1  # start with 1 because 1 is the identity for multiplication
+    result = 1  
     for i in arr:
         result *= i
     await ctx.send(f"Result = {result}")
 
+@tasks.loop(minutes=MAX_SESSION)
+async def breakRemind():
+    channel = bot.get_channel(CHANNEL_ID)
+    await channel.send(f"**Time to take a break!** You've been studying for {MAX_SESSION} minutes")
+
+bot.command()
+@commands.has_permissions(administrator=True)  
+async def set_max_session(ctx, minutes: int):
+    global MAX_SESSION
+    if minutes < 1:
+        await ctx.send("Invalid value. Please enter a positive integer for minutes.")
+        return
+    MAX_SESSION = minutes
+    await ctx.send(f"Max session time has been set to {MAX_SESSION} minutes.")
+    breakRemind.change_interval(minutes=MAX_SESSION)  
+
+
 @bot.command()
-async def start(ctx):
+async def start(ctx, session_length: int):
     global session
     if session.is_active:
         await ctx.send("Session is already active!")
@@ -60,18 +77,23 @@ async def start(ctx):
 
     session.is_active = True
     session.start_time = datetime.now()
-    await ctx.send(f"Study session has started.")
+
+   
+    num_breaks = session_length // MAX_SESSION
+    breakRemind.start(loop_count=num_breaks)  
+    await ctx.send(f"Study session has started for {session_length} minutes.")
 
 @bot.command()
 async def end(ctx):
     global session
-    if not session.is_active or session.is_pomodoro:
-        await ctx.send("No regular session is active to end!")
+    if not session.is_active:
+        await ctx.send("No session is active to end!")
         return
 
     end_time = datetime.now()
     session.total_time += end_time - session.start_time
     session.is_active = False
+    breakRemind.stop()  
     await ctx.send(f"Study session has been ended! Total study time: {session.total_time}")
 
 @bot.command()
@@ -86,7 +108,7 @@ async def pomodoro(ctx, work_time: int = 25, break_time: int = 5, cycles: int = 
     session.start_time = datetime.now()
 
     for _ in range(cycles):
-        if not session.is_active:  # Check if session should end prematurely
+        if not session.is_active:  
             break
         await ctx.send(f"Starting a {work_time}-minute work period now!")
         await asyncio.sleep(work_time * 60)
@@ -140,10 +162,17 @@ async def view_tasks(ctx):
     else:
         tasks = "\n".join(f"{i+1}. {task}" for i, task in enumerate(todo_lists[user_id]))
         await ctx.send(f"Your to-do list:\n{tasks}")
+
+
+
+
+
 @bot.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         await ctx.send("Command not found.")
+    elif isinstance(error, commands.MissingPermissions):
+        await ctx.send("You do not have permission to use this command.")
 
 
 
