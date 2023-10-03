@@ -2,6 +2,7 @@ from discord.ext import commands, tasks
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 import asyncio
+import json
 
 @dataclass
 class Session:
@@ -10,13 +11,17 @@ class Session:
     start_time: datetime = datetime.min
     total_time: timedelta = timedelta(0)
 
+
+with open('config.json', 'r') as config_file:
+    config = json.load(config_file)
+    
 MAX_SESSION = 60
 CHANNEL_ID = 1154552490361102426
 session = Session()
 
 class SessionCog(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
+    def __init__(self, client):
+        self.client = client
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -24,11 +29,11 @@ class SessionCog(commands.Cog):
 
     @tasks.loop(minutes=MAX_SESSION)
     async def break_remind(self):
-        channel = self.bot.get_channel(CHANNEL_ID)
+        channel = self.client.get_channel(CHANNEL_ID)
         await channel.send(f"**Time to take a break!** You've been studying for {MAX_SESSION} minutes")
-
+    
     @commands.command()
-    async def start(self, ctx, session_length: int):
+    async def start(self, ctx, session_length: int = None):
         global session
         if session.is_active:
             await ctx.send("Session is already active!")
@@ -36,6 +41,11 @@ class SessionCog(commands.Cog):
 
         session.is_active = True
         session.start_time = datetime.now()
+
+  
+        if session_length is None:
+            await ctx.send("Study session has started with no time limit!")
+            return
 
         num_breaks = session_length // MAX_SESSION
         self.break_remind.start(loop_count=num_breaks)
@@ -103,6 +113,5 @@ class SessionCog(commands.Cog):
         await ctx.send(f"Max session time has been set to {MAX_SESSION} minutes.")
         self.break_remind.change_interval(minutes=MAX_SESSION)
 
-# The setup function to load the cog.
-async def setup(bot):
-    await bot.add_cog(SessionCog(bot))
+async def setup(client):
+    await client.add_cog(SessionCog(client))

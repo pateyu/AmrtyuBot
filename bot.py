@@ -4,20 +4,15 @@ import discord
 import os
 import json
 
-# Load the configuration file
+
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
-# Access the token
+
 discord_token = config['TOKEN']
 CHANNEL_ID = 1154552490361102426
-MAX_SESSION= 60
-
-
-
 
 client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
-
 
 
 async def load():
@@ -36,7 +31,7 @@ async def main():
 
 @client.event
 async def on_ready():
-    print("Hello, the study bot is ready!")
+    print("Bot is ready.")
     channel = client.get_channel(CHANNEL_ID)
     await channel.send("Hello! Study bot is ready!")
 
