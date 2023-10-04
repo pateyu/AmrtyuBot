@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from database import create_connection
 
 
 tasks = {}
@@ -7,8 +8,8 @@ tasks = {}
 class task(commands.Cog):
     def __init__(self, client):
         self.client = client
-    
-    
+        self.conn = create_connection()
+
     @commands.Cog.listener()
     async def on_ready(self):
         print("todo.py cog is ready.")
@@ -22,7 +23,7 @@ class task(commands.Cog):
         embed = discord.Embed(
             title="Task Added",
             description=f"Added task: {task}",
-            color=discord.Color.green()  # Optional: Set embed color to green
+            color=discord.Color.green()  
         )
         await ctx.send(embed=embed)
 
@@ -33,7 +34,7 @@ class task(commands.Cog):
             embed = discord.Embed(
                 title="No Tasks",
                 description="You have no tasks.",
-                color=discord.Color.red()  # Optional: Set embed color to red
+                color=discord.Color.red()  
             )
             await ctx.send(embed=embed)
             return
@@ -42,7 +43,7 @@ class task(commands.Cog):
             embed = discord.Embed(
                 title="Task Not Found",
                 description=f"No task found with number {task}.",
-                color=discord.Color.red()  # Optional: Set embed color to red
+                color=discord.Color.red()  
             )
             await ctx.send(embed=embed)
             return
@@ -51,7 +52,7 @@ class task(commands.Cog):
         embed = discord.Embed(
             title="Task Removed",
             description=f"Removed task: {removed_task}",
-            color=discord.Color.green()  # Optional: Set embed color to green
+            color=discord.Color.green()  
         )
         await ctx.send(embed=embed)    
              
@@ -59,13 +60,17 @@ class task(commands.Cog):
     async def showTasks(self, ctx):
         user_id = ctx.author.id
         if user_id not in tasks or not tasks[user_id]:
-            await ctx.send("You have no tasks on your to-do list")
-            return
+            embed = discord.Embed(
+                title="No Tasks",
+                description="You have no tasks.",
+                color=discord.Color.red()  
+            )
+            await ctx.send(embed=embed)
         else:
             embed = discord.Embed(
                 title=f"{ctx.author.name}'s To-Do List",
                 description="\n".join([f"{i+1}. {task}" for i, task in enumerate(tasks[user_id])]),
-                color=discord.Color.blue()  # Optional: Set embed color
+                color=discord.Color.blue()  
             )
             await ctx.send(embed=embed)
 
