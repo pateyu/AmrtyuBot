@@ -1,3 +1,4 @@
+import discord
 from discord.ext import commands
 
 
@@ -18,21 +19,42 @@ class task(commands.Cog):
         if user_id not in tasks:
             tasks[user_id] = []
         tasks[user_id].append(task)
-        await ctx.send(f"Added task: {task}")
+        embed = discord.Embed(
+            title="Task Added",
+            description=f"Added task: {task}",
+            color=discord.Color.green()  # Optional: Set embed color to green
+        )
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def removeTask(self, ctx, *, task: int):
         user_id = ctx.author.id
         if user_id not in tasks:
-            await ctx.send("You have no tasks.")
-            
-        if task not in tasks[user_id]:
-            await ctx.send(f"No task found with number {task}.")
-            
-        else:
-            removed_task = tasks[user_id].pop(task-1)
-            await ctx.send(f"Removed task: {removed_task}")
-            
+            embed = discord.Embed(
+                title="No Tasks",
+                description="You have no tasks.",
+                color=discord.Color.red()  # Optional: Set embed color to red
+            )
+            await ctx.send(embed=embed)
+            return
+        
+        if task > len(tasks[user_id]) or task <= 0:
+            embed = discord.Embed(
+                title="Task Not Found",
+                description=f"No task found with number {task}.",
+                color=discord.Color.red()  # Optional: Set embed color to red
+            )
+            await ctx.send(embed=embed)
+            return
+        
+        removed_task = tasks[user_id].pop(task-1)
+        embed = discord.Embed(
+            title="Task Removed",
+            description=f"Removed task: {removed_task}",
+            color=discord.Color.green()  # Optional: Set embed color to green
+        )
+        await ctx.send(embed=embed)    
+             
     @commands.command()
     async def showTasks(self, ctx):
         user_id = ctx.author.id
@@ -40,8 +62,12 @@ class task(commands.Cog):
             await ctx.send("You have no tasks on your to-do list")
             return
         else:
-            tasks_str = "\n".join([f"{i+1}) {task}" for i, task in enumerate(tasks[user_id])])
-            await ctx.send(f"Your to-do list: \n{tasks_str}")
+            embed = discord.Embed(
+                title=f"{ctx.author.name}'s To-Do List",
+                description="\n".join([f"{i+1}. {task}" for i, task in enumerate(tasks[user_id])]),
+                color=discord.Color.blue()  # Optional: Set embed color
+            )
+            await ctx.send(embed=embed)
 
 
 async def setup(client):
