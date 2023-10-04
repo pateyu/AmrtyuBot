@@ -3,26 +3,23 @@ import asyncio
 import discord
 import os
 import json
-
+from database import create_connection, create_table
 
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
-
 
 discord_token = config['TOKEN']
 CHANNEL_ID = 1154552490361102426
 
 client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
-
 async def load():
-  for filename in os.listdir("./cogs"):
-    if filename.endswith(".py"):
-        await client.load_extension(f"cogs.{filename[:-3]}")
-        print(f"Loaded Cog: {filename[:-3]}")
-    else:
-        print("Unable to load pycache folder.")
-
+    for filename in os.listdir("./cogs"):
+        if filename.endswith(".py"):
+            await client.load_extension(f"cogs.{filename[:-3]}")
+            print(f"Loaded Cog: {filename[:-3]}")
+        else:
+            print("Unable to load pycache folder.")
 
 async def main():
     async with client:
@@ -35,7 +32,6 @@ async def on_ready():
     channel = client.get_channel(CHANNEL_ID)
     await channel.send("Hello! Study bot is ready!")
 
-
 @client.event
 async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
@@ -43,5 +39,7 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingPermissions):
         await ctx.send("You do not have permission to use this command.")
 
+
+create_table()
 
 asyncio.run(main())
