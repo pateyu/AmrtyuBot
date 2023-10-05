@@ -23,6 +23,7 @@ async def load():
 
 async def main():
     async with client:
+        await create_table()
         await load()
         await client.start(discord_token)
 
@@ -39,7 +40,5 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingPermissions):
         await ctx.send("You do not have permission to use this command.")
 
-
-create_table()
 
 asyncio.run(main())
