@@ -102,16 +102,5 @@ class SessionCog(commands.Cog):
         await ctx.send("Pomodoro session has been stopped!")
         await ctx.send(f"Total study time: {session.total_time}")
 
-    @commands.command()
-    @commands.has_permissions(administrator=True)
-    async def set_max_session(self, ctx, minutes: int):
-        global MAX_SESSION
-        if minutes < 1:
-            await ctx.send("Invalid value. Please enter a positive integer for minutes.")
-            return
-        MAX_SESSION = minutes
-        await ctx.send(f"Max session time has been set to {MAX_SESSION} minutes.")
-        self.break_remind.change_interval(minutes=MAX_SESSION)
-
 async def setup(client):
     await client.add_cog(SessionCog(client))

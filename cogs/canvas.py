@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from canvasapi import Canvas
 from canvasapi.course import Course, Assignment
 from datetime import datetime, timedelta
@@ -12,6 +12,7 @@ with open('config.json', 'r') as config_file:
 
 API_KEY = config['CANVAS_API_KEY']
 API_URL = 'https://umsystem.instructure.com/'
+CHANNEL_ID = int(config['CHANNEL_ID'])
 
 
 CANVAS_DATE_FORMAT = "%Y-%m-%dT%H:%M:%SZ"  
@@ -22,9 +23,15 @@ class CanvasCog(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.canvas = Canvas(API_URL, API_KEY)
+        self.assignment_alert.start()  # Start the background task
+
+    def cog_unload(self):
+        self.assignment_alert.cancel()  # Stop the assignment_alert task
+
 
     @commands.Cog.listener()
     async def on_ready(self):
+        await self.bot.wait_until_ready()
         print("canvas.py cog is ready.")
 
     @commands.command(aliases=["courses"])
@@ -80,6 +87,26 @@ class CanvasCog(commands.Cog):
         embed.set_footer(text=f"Response time: {response_time:1.3f}")
         await message.edit(embed=embed)
         print(f"Successfully sent upcoming assignments for {course.name:<80} {response_time:1.3f}")
+    
+    @tasks.loop(hours=24) 
+    async def assignment_alert(self):
+        ALERT_BEFORE = timedelta(days=1)  
+
+        for course in self.canvas.get_courses(enrollment_state="active"):
+            for assignment in course.get_assignments():
+                if assignment.due_at is not None:
+                    due_date = pytz.utc.localize(datetime.strptime(assignment.due_at, CANVAS_DATE_FORMAT))
+                    current_time = datetime.now(pytz.utc)
+                    time_to_due_date = due_date - current_time
+
+                    if time_to_due_date <= ALERT_BEFORE:
+                        due_date_ct = due_date.astimezone(pytz.timezone('America/Chicago'))
+                        announcement = f"Assignment **{assignment.name}** for course **{course.name}** is due on {due_date_ct.strftime(OUTPUT_DATE_FORMAT)}!"
+                        channel = self.client.get_channel(CHANNEL_ID)
+                        await channel.send(announcement)
+
+
+
 
 async def setup(client):
     await client.add_cog(CanvasCog(client))

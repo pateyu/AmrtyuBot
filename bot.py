@@ -9,7 +9,7 @@ with open('config.json', 'r') as config_file:
     config = json.load(config_file)
 
 discord_token = config['TOKEN']
-CHANNEL_ID = 1154552490361102426
+CHANNEL_ID = int(config['CHANNEL_ID'])
 
 client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 
