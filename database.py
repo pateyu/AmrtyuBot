@@ -1,17 +1,17 @@
-import sqlite3
+import aiosqlite
 
-def create_connection():
-    conn = sqlite3.connect('bot.db')
+async def create_connection():
+    conn = await aiosqlite.connect('bot.db')
     return conn
 
-def create_table():
-    conn = create_connection()
-    cursor = conn.cursor()
-    cursor.execute('''
+async def create_table():
+    conn = await create_connection()
+    cursor = await conn.cursor()
+    await cursor.execute('''
         CREATE TABLE IF NOT EXISTS tasks (
             user_id INTEGER,
             task TEXT
         )
     ''')
-    conn.commit()
-    conn.close()
+    await conn.commit()
+    await conn.close()
