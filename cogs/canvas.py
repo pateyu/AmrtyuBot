@@ -21,11 +21,9 @@ class CanvasCog(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.canvas = Canvas(API_URL, API_KEY)
-        self.assignment_alert.start()  # Start the background task
-
+        self.assignment_alert.start()  
     def cog_unload(self):
-        self.assignment_alert.cancel()  # Stop the assignment_alert task
-
+        self.assignment_alert.cancel()  
     @commands.Cog.listener()
     async def on_ready(self):
         await self.client.wait_until_ready()
@@ -47,23 +45,23 @@ class CanvasCog(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["due", "upcoming", "assignments"])
-    async def get_assignments(self, ctx, course_id: int, num_assignments: int = 5):
-        # gets starts time
+    async def getCourseAssignments(self, ctx, course_id: int, num_assignments: int = 5):
+     
         start_time = perf_counter()
-        # creates embed
+       
         embed = discord.Embed(description="Retrieving upcoming assignments for course...")
         message = await ctx.send(embed=embed)
     
-        # gets course
+       
         course = self.canvas.get_course(course_id)
-        #sorts assignments by due date
+       
         sorted_assignments = sorted(
             course.get_assignments(),
             key=lambda a: a.due_at if a.due_at is not None else " "
         )
-        #GETS CURRENT TIME
+   
         current_time = datetime.now()
-        # gets index of first assignment that is due after current time
+      
         assignment_index = 0
         while (
             assignment_index < len(sorted_assignments) and
@@ -73,14 +71,14 @@ class CanvasCog(commands.Cog):
             )
         ):
             assignment_index += 1
-        # gets upcoming assignments from user input
+ 
         upcoming_assignments = sorted_assignments[assignment_index:min(assignment_index+num_assignments, len(sorted_assignments))]
-        # Add each upcoming assignment's name and due date to the embed
+       
         for assignment in upcoming_assignments:
             due_date = pytz.utc.localize(datetime.strptime(assignment.due_at, CANVAS_DATE_FORMAT))
             due_date_ct = due_date.astimezone(pytz.timezone('America/Chicago'))
             embed.add_field(name=assignment.name, value=due_date_ct.strftime(OUTPUT_DATE_FORMAT), inline=False)
-        #update embed
+        
         embed.title = course.name
         embed.description = "Here are the upcoming due dates for this course"
         await message.edit(embed=embed)
@@ -89,7 +87,7 @@ class CanvasCog(commands.Cog):
     async def assignment_alert(self):
         ALERT_BEFORE = timedelta(days=2)
         
-        # Get all active courses for the user
+        
         user = self.canvas.get_current_user()
         courses = user.get_courses(enrollment_state="active")
         
@@ -99,7 +97,7 @@ class CanvasCog(commands.Cog):
                     due_date = pytz.utc.localize(datetime.strptime(assignment.due_at, CANVAS_DATE_FORMAT))
                     current_time = datetime.now(pytz.utc)
                     
-                    # Check if the due date is in the future and within the alert period
+                    
                     if due_date > current_time and (due_date - current_time) <= ALERT_BEFORE:
                         due_date_ct = due_date.astimezone(pytz.timezone('America/Chicago'))
                         embed = discord.Embed(
@@ -109,10 +107,43 @@ class CanvasCog(commands.Cog):
                         )
                         channel = self.client.get_channel(CHANNEL_ID)
                         await channel.send(embed=embed)
-                       
+    
+    @commands.command(aliases=["due_today"])
+    async def getAssignments(self, ctx):
+        """Retrieve assignments due within the next 24 hours."""
+        
+        embed = discord.Embed(description="Retrieving assignments due in the next 24 hours...")
+        message = await ctx.send(embed=embed)
+
+        
+        current_time = datetime.now(pytz.utc)
+        next_24_hours = current_time + timedelta(hours=24)
+
+        embed = discord.Embed(
+            title='Assignments Due in Next 24 Hours',
+            description="Here are your assignments due within the next 24 hours:"
+        )
+
+        
+        user = self.canvas.get_current_user()
+        courses = user.get_courses(enrollment_state="active")
+
+        for course in courses:
+            for assignment in course.get_assignments():
+                if assignment.due_at is not None:
+                    due_date = pytz.utc.localize(datetime.strptime(assignment.due_at, CANVAS_DATE_FORMAT))
+                    
+                    
+                    if current_time < due_date < next_24_hours:
+                        due_date_ct = due_date.astimezone(pytz.timezone('America/Chicago'))
+                        assignment_info = f"**{assignment.name}** for course **{course.name}** is due on {due_date_ct.strftime(OUTPUT_DATE_FORMAT)}"
+                        embed.add_field(name=f"Due: {due_date_ct.strftime(OUTPUT_DATE_FORMAT)}", value=assignment_info, inline=False)
+                        
+        
+        await message.edit(embed=embed)
     @assignment_alert.before_loop
     async def before_assignment_alert(self):
-        await self.client.wait_until_ready()  # Wait for the bot to be ready
+        await self.client.wait_until_ready()  
 
 async def setup(client):
     await client.add_cog(CanvasCog(client))

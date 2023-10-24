@@ -3,7 +3,7 @@ import asyncio
 import discord
 import os
 import json
-from database import create_connection, create_table
+from database import create_table
 
 with open('config.json', 'r') as config_file:
     config = json.load(config_file)
