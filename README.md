@@ -7,7 +7,6 @@ AtudyBot is a Discord bot designed to assist students with their study schedules
 - **Canvas LMS**: Sync your classes, and get reminders for upcomming assignments.
 - **Reminders**: Set reminders for your tasks and exams.
 - **Study Sessions** Use a built-in pomodoro timer and other study session tools to keep track of your productivity all from one place.
-- [Add more features as necessary]
 
 ## Commands 🤖
 
@@ -40,7 +39,7 @@ AtudyBot is a Discord bot designed to assist students with their study schedules
       "CANVAS_API_KEY": "YOUR_CANVAS_API_KEY",
 
       "CHANNEL_ID": "YOUR_CHANNEL ID"
-        }
+     }
  ```
 5. **Run the Bot**
     ```bash
