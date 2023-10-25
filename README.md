@@ -16,6 +16,7 @@ AtudyBot is a Discord bot designed to assist students with their study schedules
 - `!showTasks`: Show all tasks.
 - `!getAssignments`: to get all assignments due within 24 hours
 - `!pomodoro`: to set a 25-5 timer. The times are customizable, and there is an option to control the amount of times the timer repeats.
+- Check out the cogs for all the other commands
 
 ## Setup and Installation ⚙️
 
@@ -30,8 +31,17 @@ AtudyBot is a Discord bot designed to assist students with their study schedules
     pip install -U discord.py
     ```
 
-3. ** Get Tokens from Canvas and Discord, as well as the Channel ID **
-   Make a config.json, and add them inside.
+3. **Get Tokens from Canvas and Discord, as well as the Channel ID**
+   - Make a config.json, and add them inside. It should look like this:
+     ```bash
+     {
+      "TOKEN": "YOUR_DISCORD_TOKEN",
+
+      "CANVAS_API_KEY": "YOUR_CANVAS_API_KEY",
+
+      "CHANNEL_ID": "YOUR_CHANNEL ID"
+        }
+ ```
 5. **Run the Bot**
     ```bash
     python bot.py
