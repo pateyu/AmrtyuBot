@@ -1,6 +1,6 @@
 # AmrtyuBot
 
-AtudyBot is a Discord bot designed to assist students with their study schedules, reminders, and other academic tasks. Integrated with Canvas LMS API, it offers updates and reminders for assignments.
+AmrtyuBot is a Discord study bot designed to assist students with their study schedules, reminders, and other academic tasks. Integrated with Canvas LMS API, it offers updates and reminders for assignments.
 ## Features 🌟
 
 - **Task Management**: Add, remove, and view tasks easily.
