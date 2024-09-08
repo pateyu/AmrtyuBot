@@ -1,5 +1,5 @@
 # AmrtyuBot
-
+## As of September 7, 2024: AmrtyuBot is being updated and new features will be added. Firstly, it will now use the Wolfram Alpha API, and it will alos be hosted on AWS Lambda 
 AmrtyuBot is a Discord study bot designed to assist students with their study schedules, reminders, and other academic tasks. Integrated with Canvas LMS API, it offers updates and reminders for assignments.
 ## Features 🌟
 
