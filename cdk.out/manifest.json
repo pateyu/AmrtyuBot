@@ -1,0 +1,101 @@
+{
+  "version": "36.0.24",
+  "artifacts": {
+    "CdkFastapiLambdaStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "CdkFastapiLambdaStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "CdkFastapiLambdaStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://982081084118/us-east-1",
+      "properties": {
+        "templateFile": "CdkFastapiLambdaStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::982081084118:role/cdk-hnb659fds-deploy-role-982081084118-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::982081084118:role/cdk-hnb659fds-cfn-exec-role-982081084118-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-982081084118-us-east-1/2427a2baf7ff3588d8f231c7187d36ebd6a7e6ac208aca1fd23f35453615834b.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "CdkFastapiLambdaStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::982081084118:role/cdk-hnb659fds-lookup-role-982081084118-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "CdkFastapiLambdaStack.assets"
+      ],
+      "metadata": {
+        "/CdkFastapiLambdaStack/FastApiLambdaFunction/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FastApiLambdaFunctionServiceRole1CEF907E"
+          }
+        ],
+        "/CdkFastapiLambdaStack/FastApiLambdaFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FastApiLambdaFunction9DDE08FC"
+          }
+        ],
+        "/CdkFastapiLambdaStack/FastApiLambdaFunction/FunctionUrl/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FastApiLambdaFunctionFunctionUrl0CC73358"
+          }
+        ],
+        "/CdkFastapiLambdaStack/FastApiLambdaFunction/invoke-function-url": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FastApiLambdaFunctioninvokefunctionurlAD8A8A70"
+          }
+        ],
+        "/CdkFastapiLambdaStack/FunctionUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "FunctionUrl"
+          }
+        ],
+        "/CdkFastapiLambdaStack/LambdaARN": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LambdaARN"
+          }
+        ],
+        "/CdkFastapiLambdaStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/CdkFastapiLambdaStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/CdkFastapiLambdaStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "CdkFastapiLambdaStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

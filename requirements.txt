@@ -1,0 +1,16 @@
+fastapi
+requests
+pyyaml
+python-dotenv
+canvasapi
+pytz
+pynacl
+mangum
+
+
+
+# AWS Lambda
+
+pytest==6.2.5
+aws-cdk-lib==2.158.0
+constructs>=10.0.0,<11.0.0

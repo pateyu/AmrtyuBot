@@ -1,0 +1,17 @@
+- name: showcourses
+  description: Show available Canvas courses.
+
+- name: getcourseassignments
+  description: Get upcoming assignments for a specific course.
+  options:
+    - name: course_id
+      description: The ID of the course.
+      type: 4 
+      required: true
+    - name: num_assignments
+      description: Number of assignments to retrieve.
+      type: 4 
+      required: false
+
+- name: getassignments
+  description: Get assignments due in the next week.
