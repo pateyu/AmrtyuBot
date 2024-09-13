@@ -1,6 +1,7 @@
-.env
-cdk.out/
-.venv/
-*.log
-__pycache__/
-*.pyc
+
+**/.env
+**/cdk.out/
+**/.venv/
+**/*.pyc
+**/__pycache__/
+**/*.log
