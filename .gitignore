@@ -1,5 +1,5 @@
 .env
-cdk.out/
+cdk.out
 .venv/
 *.log
 __pycache__/
