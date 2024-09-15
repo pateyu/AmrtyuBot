@@ -1,10 +1,10 @@
-from aws_cdk import Stack, Duration, CfnOutput
+from aws_cdk import Stack, Duration, CfnOutput, aws_dynamodb as dynamodb
 from constructs import Construct
 from aws_cdk.aws_lambda import DockerImageFunction, DockerImageCode, FunctionUrlAuthType, HttpMethod, Architecture
 from aws_cdk.aws_ecr_assets import DockerImageAsset
 import os
 
-class CdkFastapiLambdaStack(Stack):
+class StudyBotLambdaStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -21,12 +21,17 @@ class CdkFastapiLambdaStack(Stack):
             raise ValueError("One or more required environment variables are missing")
 
         # Define the Docker image asset, pointing to the root directory where the Dockerfile is located
-        docker_image = DockerImageAsset(self, "FastApiDockerImage",
+        docker_image = DockerImageAsset(self, "DockerImage",
             directory="./"
         )
+        self.user_config_table = dynamodb.Table(self, "StudyBotUserConfig",
+            partition_key=dynamodb.Attribute(name="UserId", type=dynamodb.AttributeType.STRING),
+            removal_policy=cdk.RemovalPolicy.DESTROY  # Remove table when the stack is destroyed (for testing)
+        )
+
 
         # Create a Lambda function using the Docker image
-        fastapi_lambda = DockerImageFunction(self, "FastApiLambdaFunction",
+        fastapi_lambda = DockerImageFunction(self, "StudyBotLambda",
             code=DockerImageCode.from_image_asset(directory="./"),  
             memory_size=1024,
             timeout=Duration.seconds(10),
