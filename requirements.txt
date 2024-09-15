@@ -6,7 +6,7 @@ canvasapi
 pytz
 pynacl
 mangum
-
+boto3
 
 
 # AWS Lambda
