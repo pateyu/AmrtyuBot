@@ -28,7 +28,7 @@ Study is a Discord study bot designed to assist students with their study schedu
     
     ```
 
-3. **Get Tokens from Canvas and Discord, as well as the Channel ID**
+3. **Get Tokens from Canvas and Discord.**
    - Make a .env , and add them inside. It should look like this:
      ```bash
      
