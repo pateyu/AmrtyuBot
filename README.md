@@ -35,11 +35,9 @@ Study is a Discord study bot designed to assist students with their study schedu
       TOKEN=YOUR_DISCORD_TOKEN
 
       CANVAS_API_KEY=YOUR_CANVAS_API_KEY
-     
- ```
-```
+    
 5. **Run the Bot**
 ```bash
     python bot.py
     `
-```
+
