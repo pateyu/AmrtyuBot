@@ -142,7 +142,7 @@ def get_user_config(user_id):
 # Process the /setup command
 async def process_setup_command(interaction_id: str, interaction_token: str, user_id: str, background_tasks: BackgroundTasks):
     # Send the setup DM to the user
-    channel_id = send_dm_to_user(user_id, "Please provide your Canvas API key, URL, and timezone (EST, CST, MST, PST, UTC)")
+    channel_id = send_dm_to_user(user_id, "Please provide your Canvas API key, URL, and timezone (EST, CST, MST, PST, UTC). Use /setup command after answering if the bot does not respond.")
 
     # Poll for the response in the background
     background_tasks.add_task(handle_setup_response, channel_id, user_id, interaction_id, interaction_token)
