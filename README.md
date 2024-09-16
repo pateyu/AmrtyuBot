@@ -1,5 +1,5 @@
-# AmrtyuBot
-## As of September 7, 2024: AmrtyuBot is being updated and new features are being added. The Readme will be updated after all major changes are added.
+# StudyBot
+## As of September 7, 2024: StudyBot is being updated and new features are being added. The Readme will be updated after all major changes are added.
 Study is a Discord study bot designed to assist students with their study schedules, reminders, and other academic tasks. Integrated with Canvas LMS API, it offers updates and reminders for assignments.
 ## Features 🌟
 
